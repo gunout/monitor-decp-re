@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🇫🇷 Monitor DECP — Marchés publics</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.2/dist/dsfr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.2/dist/utility/utility.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --blue-france:#000091;
+  --blue-france-hi:#1212ff;
+  --blue-france-soft:#e3e3fd;
+  --blue-eu:#003399;
+  --blue-eu-hi:#0055ff;
+  --blue-eu-soft:#e6ecff;
+  --gold-eu:#ffcc00;
+  --red-marianne:#E1000F;
+  --red-marianne-soft:#ffe9e9;
+  --white:#ffffff;
+  --grey-50:#f6f6f6;
+  --grey-100:#eeeeee;
+  --grey-200:#e5e5e5;
+  --grey-500:#929292;
+  --grey-700:#3a3a3a;
+  --grey-900:#1e1e1e;
+  --green-bourgeon:#18753c;
+  --green-emeraude:#00a95f;
+  --yellow-tournesol:#ffb800;
+  --font-mono:'SF Mono',Menlo,Consolas,'Courier New',monospace;
+  --font-sans:'Marianne','system-ui',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+html{height:100%}
+body{font-family:var(--font-sans);background:var(--grey-50);color:var(--grey-900);
+  font-size:13px;line-height:1.5;min-height:100%;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--grey-100)}
+::-webkit-scrollbar-thumb{background:var(--grey-500);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--blue-eu)}
+
+.eu-band{height:6px;background:linear-gradient(to right,
+  var(--blue-eu) 0%, var(--blue-eu) 33.33%,
+  var(--gold-eu) 33.33%, var(--gold-eu) 66.66%,
+  var(--white) 66.66%, var(--white) 100%);}
+
+.bloc-marque{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--white);border-bottom:1px solid var(--grey-200);}
+.bloc-marque-logo{font-weight:700;font-size:13px;line-height:1.15;color:var(--blue-eu);letter-spacing:0.3px;text-transform:uppercase;border-right:1px solid var(--grey-200);padding-right:12px;}
+.bloc-marque-devise{font-size:10px;font-weight:400;color:var(--grey-700);line-height:1.3;letter-spacing:0.5px;}
+.bloc-marque-devise em{display:block;font-style:normal;text-transform:uppercase;letter-spacing:1.2px;font-size:9px;color:var(--grey-500);}
+
+.topbar{background:var(--white);border-bottom:1px solid var(--grey-200);display:flex;align-items:center;padding:10px 16px;gap:12px;position:sticky;top:6px;z-index:100;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
+.brand{font-size:14px;font-weight:700;color:var(--blue-eu);letter-spacing:0.3px;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--green-emeraude);box-shadow:0 0 0 3px rgba(0,169,95,0.2);animation:pulse 1.8s infinite;flex-shrink:0;}
+.brand .dot.offline{background:var(--red-marianne);box-shadow:0 0 0 3px rgba(225,0,15,0.2);animation:none;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+.brand .sub{color:var(--grey-500);font-weight:400;font-size:12px;font-family:var(--font-mono);}
+
+.tabs{display:flex;gap:4px;order:3;width:100%;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;color:var(--grey-700);font-size:12px;font-weight:500;padding:8px 14px;border-radius:4px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;}
+.tab:hover{background:var(--blue-eu-soft);color:var(--blue-eu)}
+.tab.active{background:var(--blue-eu-soft);color:var(--blue-eu);border-bottom-color:var(--blue-eu);font-weight:700;}
+
+.topbar-right{margin-left:auto;display:flex;gap:14px;font-family:var(--font-mono);font-size:11px;align-items:center;flex-wrap:wrap;order:2;}
+.topbar-stat{display:flex;gap:5px;color:var(--grey-700);align-items:center;white-space:nowrap;}
+.topbar-stat .val{color:var(--blue-eu);font-weight:700;padding:2px 6px;border-radius:3px;background:var(--blue-eu-soft);}
+.topbar-stat .val.green{color:var(--green-bourgeon);background:#b8fec9}
+.topbar-stat .val.amber{color:#8a5e00;background:#ffe9b8}
+.topbar-stat .val.red{color:var(--red-marianne);background:var(--red-marianne-soft)}
+
+.app{display:grid;grid-template-columns:300px 1fr 320px;height:calc(100vh - 130px);overflow:hidden;gap:0;}
+@media(max-width:1200px){.app{grid-template-columns:260px 1fr 280px}}
+
+.sidebar{background:var(--white);border-right:1px solid var(--grey-200);display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.sb-head{padding:14px 16px;border-bottom:1px solid var(--grey-200);background:var(--grey-50);flex-shrink:0;}
+.sb-title{font-size:12px;font-weight:700;color:var(--blue-eu);letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.sb-title::before{content:'';width:4px;height:14px;background:var(--gold-eu);}
+.sb-count{font-family:var(--font-mono);font-size:11px;color:var(--grey-500);margin-top:6px;}
+
+.sb-actions{display:flex;gap:4px;padding:8px 14px;border-bottom:1px solid var(--grey-200);background:var(--grey-50);flex-shrink:0;}
+.sb-actions button{flex:1;background:var(--white);border:1px solid var(--grey-200);color:var(--grey-700);font-size:10px;font-weight:600;padding:5px 6px;border-radius:3px;cursor:pointer;transition:all 0.15s;font-family:var(--font-sans);}
+.sb-actions button:hover{border-color:var(--blue-eu);color:var(--blue-eu);background:var(--blue-eu-soft);}
+
+.sb-search{padding:10px 14px;border-bottom:1px solid var(--grey-200);flex-shrink:0;}
+.sb-search input{width:100%;background:var(--white);border:1px solid var(--grey-200);border-radius:4px;color:var(--grey-900);padding:9px 12px;font-size:13px;font-family:var(--font-sans);}
+.sb-search input:focus{outline:none;border-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
+
+.sb-list{flex:1;overflow-y:auto;padding:8px;min-height:0;}
+
+.portal-item{background:var(--white);border:1px solid var(--grey-200);border-left:4px solid var(--grey-500);border-radius:4px;padding:8px 10px;margin-bottom:5px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;}
+.portal-item:hover{border-color:var(--blue-eu);background:var(--blue-eu-soft);transform:translateX(2px);}
+.portal-item.active{background:var(--blue-eu-soft);border-color:var(--blue-eu);border-left-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
+.portal-item.active .portal-check{background:var(--blue-eu);border-color:var(--blue-eu);color:var(--white);}
+.portal-check{width:16px;height:16px;border:2px solid var(--grey-500);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:transparent;transition:all 0.15s;}
+.portal-flag{font-size:18px;flex-shrink:0}
+.portal-info{flex:1;min-width:0}
+.portal-name{font-size:12px;font-weight:700;color:var(--grey-900);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.portal-type{font-family:var(--font-mono);font-size:9px;color:var(--grey-500);text-transform:uppercase;margin-top:2px;letter-spacing:0.5px;}
+
+.center{background:var(--grey-50);display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+
+.search-bar{padding:14px 16px;background:var(--white);border-bottom:1px solid var(--grey-200);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.search-bar input[type=text]{flex:1;min-width:200px;background:var(--white);border:1px solid var(--grey-200);border-radius:4px;color:var(--grey-900);padding:11px 14px;font-size:14px;font-family:var(--font-sans);}
+.search-bar input[type=text]:focus{outline:none;border-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
+.search-bar select{background:var(--white);border:1px solid var(--grey-200);border-radius:4px;color:var(--grey-900);padding:11px 12px;font-size:13px;font-family:var(--font-sans);}
+.search-bar select:focus{outline:none;border-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
+.search-btn{background:var(--blue-eu);color:var(--white);border:1px solid var(--blue-eu);font-size:13px;font-weight:700;padding:11px 20px;border-radius:4px;cursor:pointer;letter-spacing:0.3px;transition:all 0.15s;white-space:nowrap;}
+.search-btn:hover{background:var(--blue-eu-hi);border-color:var(--blue-eu-hi);}
+.search-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+.mode-tabs{display:flex;gap:0;padding:0 10px;border-bottom:1px solid var(--grey-200);background:var(--white);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.mode-tabs::-webkit-scrollbar{display:none}
+.mode-tab{background:transparent;border:none;color:var(--grey-700);font-size:12px;font-weight:500;padding:10px 14px;cursor:pointer;letter-spacing:0.2px;transition:all 0.15s;white-space:nowrap;border-bottom:3px solid transparent;}
+.mode-tab:hover{background:var(--grey-50);color:var(--blue-eu)}
+.mode-tab.active{color:var(--blue-eu);border-bottom-color:var(--blue-eu);font-weight:700;}
+
+.results{flex:1;overflow-y:auto;padding:14px;min-height:0;}
+.result-card{background:var(--white);border:1px solid var(--grey-200);border-left:4px solid var(--blue-eu);border-radius:4px;padding:14px 16px;margin-bottom:10px;transition:all 0.15s;}
+.result-card:hover{border-color:var(--blue-eu);box-shadow:0 4px 12px rgba(0,51,153,0.08);transform:translateX(2px);}
+.rc-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.rc-title{font-size:14px;font-weight:700;color:var(--grey-900);flex:1;line-height:1.35;}
+.rc-title a{color:var(--grey-900);text-decoration:none}
+.rc-title a:hover{color:var(--blue-eu);text-decoration:underline;}
+.rc-badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0;}
+.rc-badge{font-family:var(--font-mono);font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;text-transform:uppercase;white-space:nowrap;letter-spacing:0.5px;}
+.rc-badge.portal{background:var(--blue-eu);color:var(--white)}
+.rc-badge.src{background:var(--grey-100);color:var(--grey-700);border:1px solid var(--grey-200)}
+.rc-badge.pop{background:var(--gold-eu);color:var(--grey-900)}
+.rc-badge.big{background:var(--green-bourgeon);color:var(--white)}
+.rc-badge.zero{background:var(--grey-500);color:var(--white)}
+.rc-desc{font-size:12px;color:var(--grey-700);line-height:1.55;margin-bottom:8px;}
+.rc-meta{display:flex;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--grey-500);flex-wrap:wrap;margin-top:8px;}
+.rc-meta .tag{background:var(--grey-50);padding:3px 8px;border-radius:3px;border:1px solid var(--grey-200);color:var(--grey-700);}
+.rc-org{color:var(--grey-700);font-weight:600;font-size:12px;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.rc-also{margin-top:8px;padding:6px 10px;background:var(--blue-eu-soft);border-radius:3px;font-family:var(--font-mono);font-size:10px;color:var(--blue-eu);}
+.rc-also a{color:var(--blue-eu);text-decoration:none}
+.rc-also a:hover{text-decoration:underline}
+
+.empty,.loading{text-align:center;padding:60px 20px;color:var(--grey-500);font-size:14px;}
+.spin{width:40px;height:40px;border:3px solid var(--grey-200);border-top-color:var(--blue-eu);border-radius:50%;animation:sp 0.8s linear infinite;margin:0 auto 14px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.error-box{background:var(--red-marianne-soft);border:1px solid var(--red-marianne);border-left-width:4px;color:var(--red-marianne);padding:16px;border-radius:4px;font-size:13px;margin:12px;}
+
+.portal-stats{display:flex;gap:4px;flex-wrap:wrap;padding:8px 14px;background:var(--white);border-bottom:1px solid var(--grey-200);flex-shrink:0;max-height:80px;overflow-y:auto;}
+.portal-stat{font-family:var(--font-mono);font-size:10px;padding:3px 8px;border-radius:12px;background:var(--grey-50);border:1px solid var(--grey-200);color:var(--grey-700);white-space:nowrap;}
+.portal-stat.ok{background:#e6f7ee;border-color:var(--green-emeraude);color:var(--green-bourgeon)}
+.portal-stat.err{background:var(--red-marianne-soft);border-color:var(--red-marianne);color:var(--red-marianne)}
+.portal-stat strong{color:inherit;font-weight:800}
+
+.pagination-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 14px;background:var(--white);border-top:1px solid var(--grey-200);border-bottom:1px solid var(--grey-200);flex-shrink:0;}
+.pagination-info{font-family:var(--font-mono);font-size:11px;color:var(--grey-700);font-weight:600;}
+.pagination-info strong{color:var(--blue-eu);font-size:13px}
+.pagination-spacer{flex:1}
+.page-btn{background:var(--white);color:var(--grey-900);border:1px solid var(--grey-200);font-size:12px;font-weight:600;padding:6px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;min-width:36px;display:inline-flex;align-items:center;justify-content:center;gap:4px;}
+.page-btn:hover:not(:disabled){border-color:var(--blue-eu);color:var(--blue-eu);background:var(--blue-eu-soft);}
+.page-btn:disabled{opacity:0.4;cursor:not-allowed}
+.page-input{width:60px;text-align:center;padding:6px 8px;font-size:12px;font-family:var(--font-mono);font-weight:700;border:1px solid var(--grey-200);border-radius:4px;background:var(--white);color:var(--blue-eu);}
+.page-input:focus{outline:none;border-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
+.page-select{background:var(--white);border:1px solid var(--grey-200);border-radius:4px;color:var(--grey-900);padding:6px 8px;font-size:12px;font-family:var(--font-sans);}
+.page-select:focus{outline:none;border-color:var(--blue-eu);}
+
+.export-group{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--grey-200);background:var(--white);flex-shrink:0;}
+.export-btn{flex:1;background:var(--white);color:var(--grey-900);border:1px solid var(--grey-200);font-size:12px;font-weight:600;padding:10px 14px;border-radius:4px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.export-btn:hover{border-color:var(--blue-eu);color:var(--blue-eu);background:var(--blue-eu-soft);}
+.export-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+.right{background:var(--white);border-left:1px solid var(--grey-200);display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.rs-head{padding:14px 16px;border-bottom:1px solid var(--grey-200);background:var(--grey-50);font-size:12px;font-weight:700;color:var(--blue-eu);letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.rs-head::before{content:'';width:4px;height:14px;background:var(--gold-eu);}
+.rs-body{flex:1;overflow-y:auto;padding:12px;min-height:0;}
+
+.intel-panel{background:var(--white);border:1px solid var(--grey-200);border-radius:4px;margin-bottom:10px;overflow:hidden;}
+.intel-head{padding:9px 12px;background:var(--grey-50);border-bottom:1px solid var(--grey-200);font-size:11px;font-weight:700;color:var(--blue-eu);letter-spacing:0.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;}
+.intel-body{padding:10px}
+.intel-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--grey-100);font-size:12px;}
+.intel-row:last-child{border-bottom:none}
+.intel-row .k{color:var(--grey-700)}
+.intel-row .v{color:var(--grey-900);font-weight:700;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:170px;font-family:var(--font-mono);font-size:11px;}
+.intel-row .v.cyan{color:var(--blue-eu)}
+.intel-row .v.green{color:var(--green-bourgeon)}
+.intel-row .v.amber{color:#8a5e00}
+.intel-row .v.red{color:var(--red-marianne)}
+
+.activity-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--grey-100);font-family:var(--font-mono);font-size:11px;}
+.activity-item:last-child{border-bottom:none}
+.activity-item .q{color:var(--grey-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;font-weight:600;}
+.activity-item .t{color:var(--grey-500);flex-shrink:0;margin-left:8px;}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;padding:14px;background:var(--white);border-bottom:1px solid var(--grey-200);flex-shrink:0;}
+.kpi{background:var(--grey-50);border:1px solid var(--grey-200);border-left:4px solid var(--blue-eu);border-radius:4px;padding:10px 12px;transition:all .15s;}
+.kpi:hover{border-color:var(--blue-eu);background:var(--blue-eu-soft);transform:translateY(-2px);}
+.kpi .label{font-size:9px;font-weight:700;color:var(--grey-500);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+.kpi .value{font-size:16px;font-weight:800;color:var(--blue-eu);font-family:var(--font-mono);line-height:1.1;word-break:break-all;}
+.kpi .sub{font-size:9px;color:var(--grey-500);margin-top:3px;font-family:var(--font-mono);}
+.kpi.green{border-left-color:var(--green-emeraude)}
+.kpi.green .value{color:var(--green-bourgeon)}
+.kpi.amber{border-left-color:var(--yellow-tournesol)}
+.kpi.amber .value{color:#8a5e00}
+.kpi.red{border-left-color:var(--red-marianne)}
+.kpi.red .value{color:var(--red-marianne)}
+
+/* Bar chart */
+.bar-row{display:grid;grid-template-columns:140px 1fr 110px;align-items:center;gap:8px;margin-bottom:8px;font-size:11px;}
+.bar-row .name{color:var(--grey-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-mono);font-weight:600;}
+.bar-track{background:var(--grey-100);border-radius:3px;height:18px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--blue-eu) 0%,var(--blue-eu-hi) 100%);border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-size:9px;color:#fff;font-weight:700;font-family:var(--font-mono);}
+.bar-row .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--blue-eu);font-weight:700;font-family:var(--font-mono);}
+.bar-fill.green{background:linear-gradient(90deg,var(--green-bourgeon) 0%,var(--green-emeraude) 100%)}
+
+@media(max-width:900px){
+  .app{display:flex;flex-direction:column;height:auto;min-height:calc(100vh - 130px)}
+  .sidebar{order:1;width:100%;border-right:none;border-bottom:1px solid var(--grey-200)}
+  .sb-list{max-height:240px}
+  .center{order:2;width:100%}
+  .results{max-height:60vh}
+  .right{order:3;width:100%;border-left:none;border-top:1px solid var(--grey-200)}
+  .tabs{order:3;width:100%}
+}
+@media(max-width:600px){
+  .bloc-marque{flex-direction:column;align-items:flex-start;padding:10px 12px}
+  .bloc-marque-logo{border-right:none;border-bottom:1px solid var(--grey-200);padding:0 0 6px 0}
+  .brand{font-size:13px;width:100%;justify-content:center}
+  .topbar-right{width:100%;justify-content:center;gap:12px;padding:6px 0;border-top:1px solid var(--grey-200)}
+  .search-bar{padding:12px}
+  .search-bar input[type=text]{font-size:13px}
+  .search-btn{padding:11px 14px;font-size:12px}
+  .result-card{padding:12px}
+  .rc-title{font-size:13px}
+  .rc-desc{font-size:11px}
+  .pagination-bar{padding:10px;gap:6px}
+  .page-btn{padding:5px 10px;font-size:11px}
+  .bar-row{grid-template-columns:90px 1fr 80px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="eu-band"></div>
+
+<div class="bloc-marque">
+  <div class="bloc-marque-logo">République<br>Française</div>
+  <div class="bloc-marque-devise">
+    <em>Liberté</em>
+    <em>Égalité</em>
+    <em>Fraternité</em>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="dot" id="statusDot"></span>
+    MONITOR DECP
+    <span class="sub">/ marchés publics</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="search">🔍 Marchés</button>
+    <button class="tab" data-tab="analytics">📊 Analyses</button>
+    <button class="tab" data-tab="files">📁 Fichiers</button>
+  </div>
+
+  <div class="topbar-right">
+    <div class="topbar-stat"><span>STATUT</span><span class="val green" id="tbStatus">—</span></div>
+    <div class="topbar-stat"><span>FICHIERS</span><span class="val amber" id="tbFiles">—</span></div>
+    <div class="topbar-stat"><span>MARCHÉS</span><span class="val" id="tbCount">—</span></div>
+    <div class="topbar-stat"><span>MONTANT</span><span class="val green" id="tbMontant">—</span></div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- SIDEBAR : filtres années -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-title">📅 Années</div>
+      <div class="sb-count" id="sbCount">—</div>
+    </div>
+    <div class="sb-actions">
+      <button id="btnSelectAll">Tout</button>
+      <button id="btnSelectNone">Aucun</button>
+      <button id="btnSelectLast3">3 dernières</button>
+    </div>
+    <div class="sb-search">
+      <input type="text" id="sourceSearch" placeholder="🔍 Filtrer les années...">
+    </div>
+    <div class="sb-list" id="sbList"></div>
+  </aside>
+
+  <!-- CENTRE -->
+  <main class="center">
+
+    <div class="search-bar">
+      <input type="text" id="queryInput" placeholder="🔍 Rechercher un marché (objet, ID, SIRET, CPV…)" autocomplete="off">
+      <select id="sortSelect">
+        <option value="montant_desc">Montant ↓</option>
+        <option value="montant_asc">Montant ↑</option>
+        <option value="date_desc">Date ↓</option>
+        <option value="date_asc">Date ↑</option>
+      </select>
+      <button class="search-btn" id="searchBtn">▶ FILTRER</button>
+    </div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-view="results">📋 Marchés</button>
+      <button class="mode-tab" data-view="json">📄 JSON brut</button>
+      <button class="mode-tab" data-view="timing">⏱️ Statistiques</button>
+    </div>
+
+    <div class="kpi-strip" id="kpiStrip"></div>
+
+    <div class="pagination-bar" id="paginationBar" hidden>
+      <span class="pagination-info" id="paginationInfo">—</span>
+      <span class="pagination-spacer"></span>
+      <button class="page-btn" id="pageFirst" title="Première page">⏮</button>
+      <button class="page-btn" id="pagePrev" title="Page précédente">←</button>
+      <input type="number" class="page-input" id="pageInput" min="1" value="1" />
+      <span style="font-size:12px;color:var(--grey-500)" id="pageTotal">/ —</span>
+      <button class="page-btn" id="pageNext" title="Page suivante">→</button>
+      <button class="page-btn" id="pageLast" title="Dernière page">⏭</button>
+      <select class="page-select" id="pageSizeSelect" title="Résultats par page">
+        <option value="10">10 / page</option>
+        <option value="25" selected>25 / page</option>
+        <option value="50">50 / page</option>
+        <option value="100">100 / page</option>
+        <option value="500">500 / page</option>
+      </select>
+    </div>
+
+    <div class="results" id="resultsArea">
+      <div class="empty">
+        <div style="font-size:48px;margin-bottom:16px">📊</div>
+        <div style="font-weight:700;color:var(--grey-900);margin-bottom:8px;font-size:16px">
+          Monitor des Marchés Publics (DECP)
+        </div>
+        <div>Chargement automatique des fichiers <code style="font-family:var(--font-mono);color:var(--blue-eu)">decp-*.json</code>…</div>
+      </div>
+    </div>
+
+    <div class="export-group">
+      <button class="export-btn" id="exportCsv" disabled>📥 Export CSV</button>
+      <button class="export-btn" id="exportJson" disabled>📥 Export JSON</button>
+      <button class="export-btn" id="clearBtn">🗑️ Effacer filtres</button>
+    </div>
+  </main>
+
+  <!-- RIGHT : intelligence -->
+  <aside class="right" id="rightPanel">
+    <div class="rs-head">Intelligence</div>
+    <div class="rs-body">
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>📁 SOURCE DE DONNÉES</span></div>
+        <div class="intel-body">
+          <div class="intel-row"><span class="k">Mode</span><span class="v cyan">Auto-load local</span></div>
+          <div class="intel-row"><span class="k">Fichiers</span><span class="v green" id="ivFiles">—</span></div>
+          <div class="intel-row"><span class="k">Erreurs</span><span class="v red" id="ivErrors">—</span></div>
+          <div class="intel-row"><span class="k">Dernier chargement</span><span class="v" id="ivLastLoad">—</span></div>
+          <div class="intel-row"><span class="k">Temps de chargement</span><span class="v amber" id="ivLoadTime">—</span></div>
+        </div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>📊 TOTAL CHARGÉ</span></div>
+        <div class="intel-body">
+          <div class="intel-row"><span class="k">Marchés</span><span class="v cyan" id="ivTotal">—</span></div>
+          <div class="intel-row"><span class="k">Montant cumulé</span><span class="v green" id="ivMontant">—</span></div>
+          <div class="intel-row"><span class="k">Titulaires uniques</span><span class="v amber" id="ivTitulaires">—</span></div>
+          <div class="intel-row"><span class="k">Acheteurs uniques</span><span class="v amber" id="ivAcheteurs">—</span></div>
+          <div class="intel-row"><span class="k">CPV uniques</span><span class="v" id="ivCpv">—</span></div>
+        </div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>🔎 FILTRE ACTIF</span></div>
+        <div class="intel-body">
+          <div class="intel-row"><span class="k">Requête</span><span class="v cyan" id="ivQuery">—</span></div>
+          <div class="intel-row"><span class="k">Années</span><span class="v amber" id="ivYears">—</span></div>
+          <div class="intel-row"><span class="k">Résultats</span><span class="v green" id="ivCount">—</span></div>
+          <div class="intel-row"><span class="k">Montant filtré</span><span class="v green" id="ivMontantF">—</span></div>
+          <div class="intel-row"><span class="k">Page</span><span class="v amber" id="ivPage">—</span></div>
+          <div class="intel-row"><span class="k">Temps</span><span class="v amber" id="ivTime">—</span></div>
+        </div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>🕐 ACTIVITÉ RÉCENTE</span></div>
+        <div class="intel-body" id="activityList">
+          <div style="text-align:center;color:var(--grey-500);font-size:11px;padding:8px">
+            Aucune activité
+          </div>
+        </div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>⚙️ CONFIGURATION</span></div>
+        <div class="intel-body">
+          <div class="intel-row"><span class="k">Source</span><span class="v cyan">decp-*.json</span></div>
+          <div class="intel-row"><span class="k">Endpoint</span><span class="v">fetch() local</span></div>
+          <div class="intel-row"><span class="k">Format</span><span class="v">DECP 2021-2026</span></div>
+          <div class="intel-row"><span class="k">Déduplication</span><span class="v green">Par ID</span></div>
+          <div class="intel-row"><span class="k">Montant</span><span class="v amber">Dernière modif.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+<script>
+/* =========================================================
+   CONFIG
+   ========================================================= */
+const FILES = [
+  "decp-2021.json",
+  "decp-2022.json",
+  "decp-2023.json",
+  "decp-2024.json",
+  "decp-2025.json",
+  "decp-2026.json"
+];
+
+/* =========================================================
+   ÉTAT
+   ========================================================= */
+const state = {
+  all: [],
+  filtered: [],
+  activeYears: new Set(),
+  currentPage: 1,
+  pageSize: 25,
+  totalResults: 0,
+  lastQuery: '',
+  lastDuration: 0,
+  lastResults: [],
+  activities: [],
+  filesOK: 0,
+  filesKO: 0,
+  loadTime: 0
+};
+
+/* =========================================================
+   UTILITAIRES
+   ========================================================= */
+const fmtEUR = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
+const fmtEURc = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:2}).format(n||0);
+const fmtNum = n => new Intl.NumberFormat('fr-FR').format(n||0);
+const escapeHtml = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function extractYear(str){ const m = String(str||'').match(/(\d{4})/); return m?m[1]:'—'; }
+
+function normalizeMarche(m, year, file){
+  // Titulaire (structure imbriquée)
+  let titulaire = '—';
+  if (Array.isArray(m.titulaires) && m.titulaires.length){
+    const t = m.titulaires[0].titulaire;
+    titulaire = t?.id || t?.typeIdentifiant || '—';
+  }
+  // Montant après modifications
+  let montant = Number(m.montant) || 0;
+  if (Array.isArray(m.modifications)){
+    for (const mod of m.modifications){
+      const mm = mod.modification;
+      if (mm && typeof mm.montant === 'number' && mm.montant > 0) montant = mm.montant;
+    }
+  }
+  return {
+    year: year || extractYear(m.id),
+    file,
+    id: m.id || '—',
+    objet: m.objet || '—',
+    nature: m.nature || '—',
+    codeCPV: m.codeCPV || '—',
+    procedure: m.procedure || '—',
+    ccag: m.ccag || '—',
+    dept: m.lieuExecution?.code || '—',
+    dateNotification: m.dateNotification || '—',
+    datePublicationDonnees: m.datePublicationDonnees || '—',
+    montant,
+    titulaire,
+    acheteur: m.acheteur?.id || '—',
+    offresRecues: m.offresRecues ?? null,
+    attributionAvance: !!m.attributionAvance,
+    tauxAvance: m.tauxAvance ?? 0,
+    sousTraitanceDeclaree: !!m.sousTraitanceDeclaree,
+    marcheInnovant: !!m.marcheInnovant,
+    typeGroupementOperateurs: m.typeGroupementOperateurs || '—',
+    formePrix: m.formePrix || '—',
+    typesPrix: m.typesPrix?.typePrix || [],
+    considerationsSociales: m.considerationsSociales?.considerationSociale || [],
+    considerationsEnvironnementales: m.considerationsEnvironnementales?.considerationEnvironnementale || [],
+    sourceFile: file
+  };
+}
+
+/* =========================================================
+   CHARGEMENT
+   ========================================================= */
+async function loadAll(){
+  const statusDot = document.getElementById('statusDot');
+  const start = performance.now();
+
+  const results = await Promise.all(FILES.map(async f => {
+    try {
+      const r = await fetch(f, { cache: 'no-store' });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const json = await r.json();
+      const marches = json?.marches?.marche || [];
+      const concessions = json?.marches?.['contrat-concession'] || [];
+      return { file: f, ok: true, marches, concessions };
+    } catch(e){
+      return { file: f, ok: false, error: e.message };
+    }
+  }));
+
+  let errors = [];
+  let ok = 0;
+  for (const r of results){
+    if (r.ok){
+      ok++;
+      const year = extractYear(r.file);
+      for (const m of r.marches) state.all.push(normalizeMarche(m, year, r.file));
+      for (const c of r.concessions){
+        const mc = { ...c, nature: c.nature || 'Contrat-concession' };
+        state.all.push(normalizeMarche(mc, year, r.file));
+      }
+    } else {
+      errors.push(`${r.file} : ${r.error}`);
+    }
+  }
+
+  // Dédup par (id|file)
+  const seen = new Map();
+  for (const m of state.all){
+    const key = m.id + '|' + m.file;
+    if (!seen.has(key)) seen.set(key, m);
+  }
+  state.all = [...seen.values()];
+
+  state.filesOK = ok;
+  state.filesKO = errors.length;
+  state.loadTime = Math.round(performance.now() - start);
+
+  statusDot.classList.toggle('offline', ok === 0);
+
+  document.getElementById('tbStatus').textContent = ok === FILES.length ? 'OK' : (ok>0?'PARTIEL':'KO');
+  document.getElementById('tbStatus').className = 'val ' + (ok === FILES.length ? 'green' : (ok>0?'amber':'red'));
+  document.getElementById('tbFiles').textContent = `${ok}/${FILES.length}`;
+  document.getElementById('tbFiles').className = 'val ' + (ok === FILES.length ? 'green' : 'amber');
+  document.getElementById('ivFiles').textContent = `${ok} / ${FILES.length}`;
+  document.getElementById('ivErrors').textContent = errors.length;
+  document.getElementById('ivErrors').className = 'v ' + (errors.length ? 'red' : 'green');
+  document.getElementById('ivLastLoad').textContent = new Date().toLocaleTimeString('fr-FR');
+  document.getElementById('ivLoadTime').textContent = state.loadTime + ' ms';
+  document.getElementById('ivTotal').textContent = fmtNum(state.all.length);
+  document.getElementById('ivMontant').textContent = fmtEUR(state.all.reduce((s,m)=>s+(Number(m.montant)||0),0));
+  document.getElementById('ivTitulaires').textContent = fmtNum(new Set(state.all.map(m=>m.titulaire).filter(t=>t!=='—')).size);
+  document.getElementById('ivAcheteurs').textContent = fmtNum(new Set(state.all.map(m=>m.acheteur).filter(t=>t!=='—')).size);
+  document.getElementById('ivCpv').textContent = fmtNum(new Set(state.all.map(m=>m.codeCPV).filter(t=>t!=='—')).size);
+  document.getElementById('tbCount').textContent = fmtNum(state.all.length);
+  document.getElementById('tbMontant').textContent = fmtEUR(state.all.reduce((s,m)=>s+(Number(m.montant)||0),0));
+
+  initYears();
+  renderKPIs(state.all);
+  applyFilters();
+}
+
+/* =========================================================
+   SIDEBAR ANNÉES
+   ========================================================= */
+function initYears(){
+  const years = [...new Set(state.all.map(m=>m.year))].filter(y=>y && y!=='—').sort();
+  state.activeYears = new Set(years);
+  renderYears();
+
+  document.getElementById('sbCount').textContent = `${years.length} années · ${state.activeYears.size} actives`;
+  document.getElementById('ivYears').textContent = years.join(', ') || '—';
+}
+
+function renderYears(){
+  const list = document.getElementById('sbList');
+  const years = [...new Set(state.all.map(m=>m.year))].filter(y=>y && y!=='—').sort();
+  const search = document.getElementById('sourceSearch').value.toLowerCase();
+
+  const filtered = years.filter(y => y.toLowerCase().includes(search));
+
+  if (!filtered.length){
+    list.innerHTML = '<div class="loading" style="padding:20px;font-size:11px">Aucune année</div>';
+    return;
+  }
+
+  // Regrouper par année -> nombre + montant
+  const byYear = {};
+  for (const m of state.all){
+    if (!byYear[m.year]) byYear[m.year] = {count:0, montant:0};
+    byYear[m.year].count++;
+    byYear[m.year].montant += Number(m.montant)||0;
+  }
+
+  list.innerHTML = filtered.map(y => {
+    const s = byYear[y] || {count:0, montant:0};
+    const flag = '📅';
+    return `
+      <div class="portal-item ${state.activeYears.has(y) ? 'active' : ''}" data-year="${y}"
+           title="Année ${y} — ${s.count} marchés — ${fmtEUR(s.montant)}">
+        <div class="portal-check">✓</div>
+        <span class="portal-flag">${flag}</span>
+        <div class="portal-info">
+          <div class="portal-name">Année ${y}</div>
+          <div class="portal-type">${s.count} marchés · ${fmtEUR(s.montant)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  list.querySelectorAll('.portal-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const y = el.dataset.year;
+      if (state.activeYears.has(y)) state.activeYears.delete(y);
+      else state.activeYears.add(y);
+      renderYears();
+      document.getElementById('sbCount').textContent =
+        `${years.length} années · ${state.activeYears.size} actives`;
+      applyFilters();
+    });
+  });
+}
+
+/* =========================================================
+   FILTRES + TRI
+   ========================================================= */
+function applyFilters(page=1){
+  const start = performance.now();
+  const q = document.getElementById('queryInput').value.toLowerCase().trim();
+  const sort = document.getElementById('sortSelect').value;
+
+  state.currentPage = page;
+
+  state.filtered = state.all.filter(m => {
+    if (!state.activeYears.has(m.year)) return false;
+    if (q){
+      const hay = [m.id, m.objet, m.codeCPV, m.procedure, m.titulaire, m.dept, m.ccag, m.acheteur].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // Tri
+  state.filtered.sort((a,b)=>{
+    switch(sort){
+      case 'montant_desc': return (b.montant||0) - (a.montant||0);
+      case 'montant_asc':  return (a.montant||0) - (b.montant||0);
+      case 'date_desc':    return String(b.dateNotification||'').localeCompare(String(a.dateNotification||''));
+      case 'date_asc':     return String(a.dateNotification||'').localeCompare(String(b.dateNotification||''));
+      default: return 0;
+    }
+  });
+
+  state.totalResults = state.filtered.length;
+  state.lastQuery = q;
+  state.lastDuration = Math.round(performance.now() - start);
+
+  if (q || state.activeYears.size < new Set(state.all.map(m=>m.year)).size){
+    state.activities.unshift({ q: q || `[${state.activeYears.size} années]`, count: state.totalResults, time: new Date() });
+    state.activities = state.activities.slice(0, 10);
+    renderActivities();
+  }
+
+  const montantF = state.filtered.reduce((s,m)=>s+(Number(m.montant)||0),0);
+  document.getElementById('ivQuery').textContent = q || '(aucun)';
+  document.getElementById('ivCount').textContent = fmtNum(state.totalResults);
+  document.getElementById('ivMontantF').textContent = fmtEUR(montantF);
+  document.getElementById('ivTime').textContent = state.lastDuration + ' ms';
+  document.getElementById('ivPage').textContent = `${state.currentPage} / ${Math.max(1, Math.ceil(state.totalResults/state.pageSize))}`;
+
+  document.getElementById('exportCsv').disabled = !state.totalResults;
+  document.getElementById('exportJson').disabled = !state.totalResults;
+
+  renderResults();
+  renderKPIs(state.filtered);
+  updatePagination();
+}
+
+/* =========================================================
+   KPI
+   ========================================================= */
+function renderKPIs(data){
+  const total = data.reduce((s,m)=>s+(Number(m.montant)||0),0);
+  const count = data.length;
+  const avg = count ? total/count : 0;
+  const montants = data.map(m=>Number(m.montant)||0).sort((a,b)=>a-b);
+  const median = montants.length ? montants[Math.floor(montants.length/2)] : 0;
+  const max = montants.length ? montants[montants.length-1] : 0;
+  const zero = data.filter(m=>!m.montant).length;
+  const gratuitsPct = count ? ((zero/count)*100).toFixed(1) : 0;
+
+  const kpis = [
+    { label:'Marchés',     value: fmtNum(count),       sub: 'filtrés',                 cls:'' },
+    { label:'Montant',     value: fmtEUR(total),       sub: 'cumulé',                  cls:'green' },
+    { label:'Moyenne',     value: fmtEUR(avg),         sub: 'par marché',              cls:'cyan' },
+    { label:'Médiane',     value: fmtEUR(median),      sub: '50% ≤ / ≥',               cls:'cyan' },
+    { label:'Max',         value: fmtEUR(max),         sub: 'plus gros marché',        cls:'amber' },
+    { label:'À 0 €',       value: fmtNum(zero),        sub: `${gratuitsPct}% du total`, cls: zero ? 'red' : 'green' }
+  ];
+
+  document.getElementById('kpiStrip').innerHTML = kpis.map(k => `
+    <div class="kpi ${k.cls}">
+      <div class="label">${k.label}</div>
+      <div class="value">${k.value}</div>
+      <div class="sub">${k.sub}</div>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   RÉSULTATS
+   ========================================================= */
+function renderResults(){
+  const area = document.getElementById('resultsArea');
+  const activeView = document.querySelector('.mode-tab.active')?.dataset.view || 'results';
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(state.totalResults / state.pageSize));
+  const page = state.currentPage;
+  const slice = state.filtered.slice((page-1)*state.pageSize, page*state.pageSize);
+  state.lastResults = slice;
+
+  if (activeView === 'json'){
+    area.innerHTML = `<pre style="font-family:var(--font-mono);font-size:11px;
+      color:var(--grey-700);background:var(--white);padding:16px;border-radius:4px;
+      overflow-x:auto;border:1px solid var(--grey-200);max-height:70vh;line-height:1.5">
+${escapeHtml(JSON.stringify(slice.slice(0,5), null, 2))}</pre>`;
+    return;
+  }
+
+  if (activeView === 'timing'){
+    const totalVal = state.filtered.reduce((s,m)=>s+(Number(m.montant)||0),0);
+    area.innerHTML = `
+      <div class="intel-panel" style="max-width:560px;margin:0 auto">
+        <div class="intel-head"><span>⏱️ STATISTIQUES DU FILTRE</span></div>
+        <div class="intel-body">
+          <div class="intel-row"><span class="k">Requête</span><span class="v cyan">${escapeHtml(state.lastQuery||'(aucune)')}</span></div>
+          <div class="intel-row"><span class="k">Années actives</span><span class="v amber">${[...state.activeYears].sort().join(', ')}</span></div>
+          <div class="intel-row"><span class="k">Résultats</span><span class="v green">${fmtNum(state.totalResults)}</span></div>
+          <div class="intel-row"><span class="k">Montant filtré</span><span class="v green">${fmtEUR(totalVal)}</span></div>
+          <div class="intel-row"><span class="k">Temps de calcul</span><span class="v amber">${state.lastDuration} ms</span></div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Vue résultats (cards)
+  if (!slice.length){
+    area.innerHTML = `<div class="empty">Aucun marché ne correspond aux critères.</div>`;
+    return;
+  }
+
+  const header = `
+    <div style="font-size:12px;color:var(--grey-700);
+                margin-bottom:12px;padding:10px 14px;background:var(--white);
+                border-radius:4px;border-left:4px solid var(--blue-eu);
+                box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <strong style="color:var(--blue-eu)">${fmtNum(state.totalResults)} marché(s)</strong>
+      · page ${page} / ${totalPages}
+      · affichés : ${slice.length}
+      · montant page : ${fmtEUR(slice.reduce((s,m)=>s+(Number(m.montant)||0),0))}
+      · ${state.activeYears.size} année(s) active(s)
+    </div>
+  `;
+
+  const cards = slice.map(m => {
+    const montantClass = m.montant === 0 ? 'zero' : (m.montant >= 1000000 ? 'big' : '');
+    const montantBadge = m.montant === 0
+      ? `<span class="rc-badge zero">0 €</span>`
+      : (m.montant >= 1000000
+          ? `<span class="rc-badge big">${fmtEUR(m.montant)}</span>`
+          : `<span class="rc-badge pop">${fmtEUR(m.montant)}</span>`);
+
+    const tags = [m.ccag, m.formePrix, ...(m.typesPrix||[])].filter(Boolean).slice(0,4)
+      .map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+
+    const consSoc = m.considerationsSociales?.length ?
+      `<span class="tag" style="background:#e6f7ee;border-color:var(--green-emeraude);color:var(--green-bourgeon)">🤝 ${escapeHtml(m.considerationsSociales[0])}</span>` : '';
+    const consEnv = m.considerationsEnvironnementales?.length ?
+      `<span class="tag" style="background:#e6ecff;border-color:var(--blue-eu);color:var(--blue-eu)">🌱 ${escapeHtml(m.considerationsEnvironnementales[0])}</span>` : '';
+
+    const st = m.sousTraitanceDeclaree ? `<span class="tag" style="background:#ffe9b8;border-color:var(--yellow-tournesol);color:#8a5e00">🔧 Sous-traitance</span>` : '';
+    const innov = m.marcheInnovant ? `<span class="tag" style="background:#f0e5ff;border-color:#6c4bd1;color:#6c4bd1">💡 Innovant</span>` : '';
+    const avance = m.attributionAvance ? `<span class="tag" style="background:#ffe9e9;border-color:var(--red-marianne);color:var(--red-marianne)">💰 Avance ${(m.tauxAvance*100).toFixed(0)}%</span>` : '';
+
+    return `
+      <div class="result-card">
+        <div class="rc-head">
+          <div class="rc-title">
+            <code style="color:var(--blue-eu);font-size:11px;font-weight:700">${escapeHtml(m.id)}</code>
+            — ${escapeHtml(m.objet)}
+          </div>
+          <div class="rc-badges">
+            <span class="rc-badge portal">📅 ${escapeHtml(m.year)}</span>
+            <span class="rc-badge src">${escapeHtml(m.procedure)}</span>
+            ${montantBadge}
+          </div>
+        </div>
+        <div class="rc-org">🏢 Acheteur ${escapeHtml(m.acheteur)} · Titulaire ${escapeHtml(m.titulaire)}</div>
+        <div class="rc-meta">
+          <span class="tag">CPV ${escapeHtml(m.codeCPV)}</span>
+          <span class="tag">Dépt ${escapeHtml(m.dept)}</span>
+          <span class="tag">📅 ${escapeHtml(m.dateNotification)}</span>
+          <span class="tag">${escapeHtml(m.nature)}</span>
+          <span class="tag">Offres : ${m.offresRecues ?? '—'}</span>
+          ${tags}
+          ${consSoc}
+          ${consEnv}
+          ${st}
+          ${innov}
+          ${avance}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  area.innerHTML = header + cards;
+}
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+function updatePagination(){
+  const bar = document.getElementById('paginationBar');
+  const info = document.getElementById('paginationInfo');
+  const input = document.getElementById('pageInput');
+  const total = document.getElementById('pageTotal');
+  const first = document.getElementById('pageFirst');
+  const prev = document.getElementById('pagePrev');
+  const next = document.getElementById('pageNext');
+  const last = document.getElementById('pageLast');
+
+  const totalPages = Math.max(1, Math.ceil(state.totalResults / state.pageSize));
+  const current = state.currentPage;
+
+  info.innerHTML = `<strong>${fmtNum(state.totalResults)}</strong> marchés · page <strong>${current}</strong> / ${totalPages}`;
+  input.value = current;
+  input.max = totalPages;
+  total.textContent = `/ ${totalPages}`;
+
+  first.disabled = current <= 1;
+  prev.disabled = current <= 1;
+  next.disabled = current >= totalPages;
+  last.disabled = current >= totalPages;
+
+  bar.hidden = state.totalResults <= state.pageSize;
+}
+
+document.getElementById('pageFirst').addEventListener('click', () => applyFilters(1));
+document.getElementById('pagePrev').addEventListener('click', () => applyFilters(Math.max(1, state.currentPage - 1)));
+document.getElementById('pageNext').addEventListener('click', () => applyFilters(state.currentPage + 1));
+document.getElementById('pageLast').addEventListener('click', () => {
+  const totalPages = Math.max(1, Math.ceil(state.totalResults / state.pageSize));
+  applyFilters(totalPages);
+});
+document.getElementById('pageInput').addEventListener('change', (e) => {
+  const totalPages = Math.max(1, Math.ceil(state.totalResults / state.pageSize));
+  const p = Math.max(1, Math.min(totalPages, parseInt(e.target.value)||1));
+  applyFilters(p);
+});
+document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+  state.pageSize = parseInt(e.target.value);
+  applyFilters(1);
+});
+
+/* =========================================================
+   TABS
+   ========================================================= */
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const tab = t.dataset.tab;
+    if (tab === 'search'){
+      applyFilters(1);
+    } else if (tab === 'analytics'){
+      renderAnalytics();
+    } else if (tab === 'files'){
+      renderFilesView();
+    }
+  });
+});
+
+document.querySelectorAll('.mode-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.mode-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    renderResults();
+  });
+});
+
+/* =========================================================
+   ANALYTICS
+   ========================================================= */
+function renderAnalytics(){
+  const data = state.filtered.length ? state.filtered : state.all;
+  const area = document.getElementById('resultsArea');
+
+  const byYear = {}, byProc = {}, byDept = {}, byNature = {}, byCpv = {}, byTitulaire = {};
+  for (const m of data){
+    byYear[m.year] = (byYear[m.year]||0) + (Number(m.montant)||0);
+    byProc[m.procedure] = (byProc[m.procedure]||0) + (Number(m.montant)||0);
+    byDept[m.dept] = (byDept[m.dept]||0) + (Number(m.montant)||0);
+    byNature[m.nature] = (byNature[m.nature]||0) + (Number(m.montant)||0);
+    byCpv[m.codeCPV] = (byCpv[m.codeCPV]||0) + (Number(m.montant)||0);
+    byTitulaire[m.titulaire] = (byTitulaire[m.titulaire]||0) + (Number(m.montant)||0);
+  }
+
+  const bars = (obj, color, top) => {
+    const arr = Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0, top || 12);
+    const max = Math.max(...arr.map(x=>x[1]), 1);
+    return arr.map(([k,v]) => {
+      const pct = (v/max)*100;
+      return `
+        <div class="bar-row">
+          <div class="name" title="${escapeHtml(k)}">${escapeHtml(k)}</div>
+          <div class="bar-track"><div class="bar-fill ${color||''}" style="width:${pct.toFixed(1)}%">${pct>=25?pct.toFixed(0)+'%':''}</div></div>
+          <div class="val">${fmtEUR(v)}</div>
+        </div>`;
+    }).join('');
+  };
+
+  area.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px">
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>📅 MONTANT PAR ANNÉE</span></div>
+        <div class="intel-body">${bars(byYear)}</div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>📋 MONTANT PAR PROCÉDURE</span></div>
+        <div class="intel-body">${bars(byProc, 'green')}</div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>🏢 TOP 12 FOURNISSEURS</span></div>
+        <div class="intel-body">${bars(byTitulaire, '', 12)}</div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>🏷️ TOP 12 CPV</span></div>
+        <div class="intel-body">${bars(byCpv, 'green', 12)}</div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>🌍 MONTANT PAR DÉPARTEMENT</span></div>
+        <div class="intel-body">${bars(byDept, '', 15)}</div>
+      </div>
+
+      <div class="intel-panel">
+        <div class="intel-head"><span>📦 MONTANT PAR NATURE</span></div>
+        <div class="intel-body">${bars(byNature, 'green')}</div>
+      </div>
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   FILES VIEW
+   ========================================================= */
+function renderFilesView(){
+  const area = document.getElementById('resultsArea');
+  const byFile = {};
+  for (const m of state.all){
+    if (!byFile[m.file]) byFile[m.file] = { count: 0, montant: 0, year: m.year };
+    byFile[m.file].count++;
+    byFile[m.file].montant += Number(m.montant)||0;
+  }
+
+  const rows = FILES.map(f => {
+    const s = byFile[f];
+    const ok = !!s;
+    return `
+      <div class="result-card" style="border-left-color:${ok?'var(--green-emeraude)':'var(--red-marianne)'}">
+        <div class="rc-head">
+          <div class="rc-title">
+            ${ok?'✅':'❌'} ${escapeHtml(f)}
+          </div>
+          <div class="rc-badges">
+            <span class="rc-badge portal">${ok ? s.count + ' entrées' : 'Non chargé'}</span>
+            ${ok ? `<span class="rc-badge pop">${fmtEUR(s.montant)}</span>` : ''}
+          </div>
+        </div>
+        ${ok ? `<div class="rc-org">Année ${escapeHtml(s.year)}</div>` : '<div class="rc-desc">Fichier absent ou illisible.</div>'}
+      </div>
+    `;
+  }).join('');
+
+  area.innerHTML = `
+    <div class="intel-panel">
+      <div class="intel-head"><span>📁 FICHIERS SOURCES</span></div>
+      <div class="intel-body" style="font-family:var(--font-mono);font-size:11px;color:var(--grey-700)">
+        Répertoire courant · ${FILES.length} fichiers attendus · ${state.filesOK} chargés · ${state.filesKO} erreurs
+      </div>
+    </div>
+    ${rows}
+  `;
+}
+
+/* =========================================================
+   SIDEBAR ACTIONS
+   ========================================================= */
+document.getElementById('btnSelectAll').addEventListener('click', () => {
+  const years = [...new Set(state.all.map(m=>m.year))].filter(y=>y && y!=='—');
+  state.activeYears = new Set(years);
+  renderYears();
+  applyFilters();
+});
+document.getElementById('btnSelectNone').addEventListener('click', () => {
+  state.activeYears = new Set();
+  renderYears();
+  applyFilters();
+});
+document.getElementById('btnSelectLast3').addEventListener('click', () => {
+  const years = [...new Set(state.all.map(m=>m.year))].filter(y=>y && y!=='—').sort();
+  state.activeYears = new Set(years.slice(-3));
+  renderYears();
+  applyFilters();
+});
+
+document.getElementById('sourceSearch').addEventListener('input', renderYears);
+
+/* =========================================================
+   SEARCH / SORT
+   ========================================================= */
+document.getElementById('searchBtn').addEventListener('click', () => applyFilters(1));
+document.getElementById('queryInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') applyFilters(1);
+});
+document.getElementById('queryInput').addEventListener('input', () => {
+  clearTimeout(window._deb);
+  window._deb = setTimeout(() => applyFilters(1), 250);
+});
+document.getElementById('sortSelect').addEventListener('change', () => applyFilters(1));
+
+/* =========================================================
+   ACTIVITÉS
+   ========================================================= */
+function renderActivities(){
+  const el = document.getElementById('activityList');
+  if (!state.activities.length){
+    el.innerHTML = '<div style="text-align:center;color:var(--grey-500);font-size:11px;padding:8px">Aucune activité</div>';
+    return;
+  }
+  el.innerHTML = state.activities.map(a => `
+    <div class="activity-item">
+      <span class="q">"${escapeHtml(a.q)}" → ${a.count}</span>
+      <span class="t">${a.time.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   EXPORTS
+   ========================================================= */
+function downloadBlob(content, filename, mime){
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('exportCsv').addEventListener('click', () => {
+  const cols = ['year','id','objet','codeCPV','procedure','dept','dateNotification','montant','titulaire','ccag','formePrix','nature','acheteur'];
+  const esc = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const rows = [cols.join(',')];
+  for (const m of state.filtered){
+    rows.push(cols.map(c => esc(m[c])).join(','));
+  }
+  downloadBlob('\ufeff' + rows.join('\n'), 'marches-decп.csv', 'text/csv;charset=utf-8');
+});
+
+document.getElementById('exportJson').addEventListener('click', () => {
+  downloadBlob(JSON.stringify(state.filtered, null, 2), 'marches-decп.json', 'application/json');
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('queryInput').value = '';
+  const years = [...new Set(state.all.map(m=>m.year))].filter(y=>y && y!=='—');
+  state.activeYears = new Set(years);
+  document.getElementById('sortSelect').value = 'montant_desc';
+  renderYears();
+  applyFilters(1);
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+});
+</script>
+</body>
+</html>
