@@ -5,7 +5,7 @@
 
 **Explorateur tout-en-un des marchés publics français**
 
-[![Version](https://img.shields.io/badge/version-7.0.0-003399?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/gunout/monitor-decp-re/releases)
+[![Version](https://img.shields.io/badge/version-7.1-003399?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/gunout/monitor-decp-re/releases)
 [![Licence](https://img.shields.io/badge/licence-MIT-00a95f?style=for-the-badge)](LICENSE)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/fr/docs/Web/HTML)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
