@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🇫🇷 Monitor DECP — v7.1</title>
+<title>🇫🇷 Monitor DECP — v7.2</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -111,6 +111,7 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
 .year-tag .ycount{opacity:.7;font-size:9px;margin-left:3px;}
 .category-select{background:var(--bg-panel);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:12px;font-family:var(--font-sans);color:var(--text);font-weight:600;cursor:pointer;min-width:180px;}
 .category-select:focus{outline:none;border-color:var(--blue-eu);}
+.category-select:disabled{opacity:.5;cursor:not-allowed;}
 .cat-tags{display:flex;gap:4px;flex-wrap:wrap;}
 .cat-tag{background:var(--blue-eu);color:#fff;padding:3px 8px;border-radius:3px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;font-family:var(--font-sans);}
 .cat-tag button{background:none;border:none;color:#fff;cursor:pointer;font-size:13px;font-weight:700;padding:0 2px;line-height:1;}
@@ -169,47 +170,10 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
 .pf-status.done{color:var(--green-bourgeon)}
 .pf-status.error{color:var(--red-marianne)}
 
-.quality-report{max-width:900px;margin:14px auto;}
-.quality-card{background:var(--bg-panel);border:1px solid var(--border);border-left:4px solid var(--green-emeraude);border-radius:6px;padding:16px 20px;margin-bottom:14px;}
-.quality-card.warn{border-left-color:var(--yellow-tournesol);}
-.quality-card.error{border-left-color:var(--red-marianne);}
-.quality-title{font-size:15px;font-weight:700;color:var(--blue-eu);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.quality-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px;}
-.quality-stat{background:var(--grey-50);border:1px solid var(--border);border-radius:4px;padding:12px;text-align:center;}
-.quality-stat .qs-val{font-size:22px;font-weight:800;font-family:var(--font-mono);color:var(--blue-eu);line-height:1;}
-.quality-stat .qs-label{font-size:10px;color:var(--grey-500);text-transform:uppercase;letter-spacing:.5px;margin-top:6px;font-weight:700;}
-.quality-stat.green .qs-val{color:var(--green-bourgeon)}
-.quality-stat.amber .qs-val{color:#8a5e00}
-.quality-stat.red .qs-val{color:var(--red-marianne)}
-.year-bar-row{display:grid;grid-template-columns:70px 1fr 120px 60px;gap:10px;align-items:center;padding:6px 0;font-size:12px;font-family:var(--font-mono);border-bottom:1px solid var(--grey-100);}
-.year-bar-row:last-child{border-bottom:none}
-.year-bar-row .yb-year{font-weight:700;color:var(--blue-eu);}
-.year-bar-row .yb-bar{background:var(--grey-100);height:16px;border-radius:3px;overflow:hidden;}
-.year-bar-row .yb-fill{height:100%;background:linear-gradient(90deg,var(--blue-eu) 0%,var(--blue-eu-hi) 100%);transition:width 1s cubic-bezier(.4,0,.2,1);}
-.year-bar-row .yb-count{text-align:right;color:var(--text);font-weight:700;}
-.year-bar-row .yb-pct{text-align:right;color:var(--grey-500);font-size:11px;}
-.quality-warning{background:rgba(255,184,0,.15);border:1px solid var(--yellow-tournesol);color:#8a5e00;padding:10px 14px;border-radius:4px;font-size:12px;margin-top:10px;line-height:1.6;}
-
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.visible{display:flex;animation:fadeIn .2s ease-out;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--bg-panel);border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:480px;width:100%;animation:scaleIn .25s ease-out;}
-@keyframes scaleIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.modal-title{font-size:15px;font-weight:700;color:var(--blue-eu);}
-.modal-close{background:transparent;border:none;color:var(--grey-500);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;}
-.modal-close:hover{background:var(--grey-100);color:var(--text);}
-.modal-body{padding:20px;font-size:13px;line-height:1.6;color:var(--text);}
-.modal-body label{display:block;font-weight:700;color:var(--grey-700);font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
-.modal-body select,.modal-body input[type=number]{width:100%;background:var(--bg-panel);border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-size:13px;font-family:var(--font-sans);color:var(--text);margin-bottom:16px;}
-.modal-body select:focus,.modal-body input:focus{outline:none;border-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
-.modal-hint{font-size:11px;color:var(--grey-500);margin-top:-10px;margin-bottom:16px;line-height:1.5;}
-.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
-.modal-btn{padding:9px 18px;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-sans);border:1px solid;transition:all .15s;}
-.modal-btn.primary{background:var(--blue-eu);color:#fff;border-color:var(--blue-eu);}
-.modal-btn.primary:hover{background:var(--blue-eu-hi);}
-.modal-btn.secondary{background:var(--bg-panel);color:var(--grey-700);border-color:var(--border);}
-.modal-btn.secondary:hover{background:var(--grey-50);}
+/* Nouveau v7.2 : bannière d'aide contextuelle */
+.help-banner{padding:12px 16px;background:rgba(255,184,0,.15);border-bottom:1px solid var(--yellow-tournesol);color:#8a5e00;font-size:12px;line-height:1.6;display:flex;align-items:center;gap:10px;}
+.help-banner.info{background:var(--blue-eu-soft);border-bottom-color:var(--blue-eu);color:var(--blue-eu);}
+.help-banner strong{font-weight:700;}
 
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:4px;}
 .cat-card{background:var(--bg-panel);border:1px solid var(--border);border-left:4px solid var(--gold-eu);border-radius:4px;padding:12px 14px;cursor:pointer;transition:all .15s;animation:fadeInUp .35s ease-out;}
@@ -274,9 +238,6 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
 .analytics-panel{background:var(--bg-panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;animation:fadeInUp .35s ease-out;}
 .analytics-panel .panel-head{padding:11px 14px;background:var(--grey-50);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--blue-eu);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px;}
 .analytics-panel .panel-head::before{content:'';width:4px;height:12px;background:var(--gold-eu);}
-.analytics-panel .panel-head .panel-actions{margin-left:auto;display:flex;gap:6px;}
-.analytics-panel .panel-head .panel-actions button{background:var(--bg-panel);border:1px solid var(--border);color:var(--grey-700);font-size:10px;font-weight:700;padding:3px 8px;border-radius:3px;cursor:pointer;transition:all .15s;font-family:var(--font-sans);}
-.analytics-panel .panel-head .panel-actions button:hover{border-color:var(--blue-eu);color:var(--blue-eu);background:var(--blue-eu-soft);}
 .analytics-panel .panel-body{padding:14px;}
 
 .compare-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;background:var(--grey-50);border-bottom:1px solid var(--border);border-radius:6px 6px 0 0;}
@@ -371,6 +332,27 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
 .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;animation:fadeIn .2s ease-out;}
 .mobile-overlay.visible{display:block;}
 
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.visible{display:flex;animation:fadeIn .2s ease-out;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg-panel);border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:480px;width:100%;animation:scaleIn .25s ease-out;}
+@keyframes scaleIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:15px;font-weight:700;color:var(--blue-eu);}
+.modal-close{background:transparent;border:none;color:var(--grey-500);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;}
+.modal-close:hover{background:var(--grey-100);color:var(--text);}
+.modal-body{padding:20px;font-size:13px;line-height:1.6;color:var(--text);}
+.modal-body label{display:block;font-weight:700;color:var(--grey-700);font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.modal-body select,.modal-body input[type=number]{width:100%;background:var(--bg-panel);border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-size:13px;font-family:var(--font-sans);color:var(--text);margin-bottom:16px;}
+.modal-body select:focus,.modal-body input:focus{outline:none;border-color:var(--blue-eu);box-shadow:0 0 0 2px var(--blue-eu-soft);}
+.modal-hint{font-size:11px;color:var(--grey-500);margin-top:-10px;margin-bottom:16px;line-height:1.5;}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+.modal-btn{padding:9px 18px;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-sans);border:1px solid;transition:all .15s;}
+.modal-btn.primary{background:var(--blue-eu);color:#fff;border-color:var(--blue-eu);}
+.modal-btn.primary:hover{background:var(--blue-eu-hi);}
+.modal-btn.secondary{background:var(--bg-panel);color:var(--grey-700);border-color:var(--border);}
+.modal-btn.secondary:hover{background:var(--grey-50);}
+
 @media(max-width:900px){
   .app{display:flex;flex-direction:column;height:auto;gap:0}
   .sidebar{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:85vw;z-index:300;transform:translateX(-100%);transition:transform .3s ease-out;box-shadow:8px 0 24px rgba(0,0,0,.15);border-right:1px solid var(--border);}
@@ -379,22 +361,12 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
   .results{max-height:70vh}
   .burger-menu{display:flex}
   .brand .sub{display:none}
-  .topbar-right{gap:8px;font-size:10px}
   .kpi-strip{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));padding:10px}
   .kpi .value{font-size:14px}
-  .search-bar{padding:10px}
-  .search-bar input[type=text]{padding:9px 12px;font-size:13px}
-  .search-btn,.cancel-btn{padding:9px 14px;font-size:12px}
-  .mode-tab{padding:9px 10px;font-size:11px}
   .analytics-grid,.compare-stats{grid-template-columns:1fr}
   .compare-arrow{transform:rotate(90deg);font-size:24px;margin:auto}
-  .map-container{grid-template-columns:1fr;gap:10px}
-  .cat-grid{grid-template-columns:1fr}
+  .map-container,.cat-grid{grid-template-columns:1fr}
   .pie-container{flex-direction:column;align-items:center}
-  .pie-legend{min-width:100%;max-height:300px}
-  .delta-row{grid-template-columns:1.5fr 1fr 1fr 1fr;font-size:10px;gap:4px}
-  .toast{bottom:12px;right:12px;left:12px;max-width:none}
-  .year-bar-row{grid-template-columns:60px 1fr 80px 50px;font-size:11px}
 }
 
 @media(max-width:500px){
@@ -402,10 +374,7 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
   .brand{font-size:12px}
   .topbar-stat{font-size:9px;padding:1px 3px}
   .topbar-stat .val{padding:1px 4px;font-size:9px}
-  .bloc-marque{padding:8px 12px}
   .kpi-strip{grid-template-columns:repeat(2,1fr)}
-  .kpi .label{font-size:8px}
-  .kpi .value{font-size:13px}
 }
 </style>
 </head>
@@ -423,7 +392,7 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
   <div class="brand">
     <span class="dot" id="statusDot"></span>
     MONITOR DECP
-    <span class="sub">/ v7.1</span>
+    <span class="sub">/ v7.2</span>
   </div>
   <div class="topbar-right">
     <div class="topbar-stat"><span>MODE</span><span class="val" id="tbMode">—</span></div>
@@ -492,6 +461,8 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
       <button class="mode-tab" data-view="files">📁 Sources</button>
     </div>
 
+    <div class="help-banner" id="helpBanner" hidden></div>
+
     <div class="filters-bar" id="filtersBar" hidden>
       <div class="filter-group">
         <span class="filter-label">📅 Années :</span>
@@ -530,9 +501,9 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
       <div class="empty">
         <div style="font-size:48px;margin-bottom:16px">📊</div>
         <div style="font-weight:700;color:var(--text);margin-bottom:8px;font-size:16px">
-          Monitor DECP — v7.1
+          Monitor DECP — v7.2
         </div>
-        <div>Détection automatique de l'année par ID activée ✅</div>
+        <div>Chargement automatique en cours…</div>
       </div>
     </div>
 
@@ -634,24 +605,17 @@ body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text);
    CONFIG
    ========================================================= */
 const API_ENDPOINTS = [
-  // 1. Proxy local (si serveur Node/Python)
   { type: 'proxy',   url: '/api/1/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/' },
-  
-  // 2. Direct data.gouv.fr (CORS souvent bloqué, mais on essaie)
   { type: 'direct',  url: 'https://www.data.gouv.fr/api/1/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/' },
-  
-  // 3. AllOrigins (gratuit, fiable)
-  { type: 'corsproxy', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.data.gouv.fr/api/1/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/') },
-  
-  // 4. CORSProxy.org (backup)
-  { type: 'corsproxy2', url: 'https://corsproxy.org/?' + encodeURIComponent('https://www.data.gouv.fr/api/1/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/') }
+  { type: 'corsproxy', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.data.gouv.fr/api/1/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/') }
 ];
 
 const CONFIG = {
   CONCURRENCY: 3, DEFAULT_FILES: 1,
   CACHE_TTL_MS: 7 * 24 * 3600 * 1000,
   YIELD_EVERY_BYTES: 2 * 1024 * 1024,
-  PARSER_POOL_SIZE: 2
+  PARSER_POOL_SIZE: 2,
+  CACHE_VERSION: 'v3'  /* v7.2 : bump version → invalide ancien cache */
 };
 
 const CATEGORIES = {
@@ -695,13 +659,25 @@ const fmtNum = n => new Intl.NumberFormat('fr-FR').format(n||0);
 const escapeHtml = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
 
-/* Helper pour écrire dans le DOM sans crash si absent */
 function safeSet(id, value, className){
   const el = document.getElementById(id);
   if (!el) return null;
   if (value !== undefined) el.textContent = value;
   if (className !== undefined) el.className = className;
   return el;
+}
+
+function showHelpBanner(message, type = 'warn'){
+  const banner = document.getElementById('helpBanner');
+  if (!banner) return;
+  if (!message){
+    banner.hidden = true;
+    banner.innerHTML = '';
+    return;
+  }
+  banner.hidden = false;
+  banner.className = 'help-banner' + (type === 'info' ? ' info' : '');
+  banner.innerHTML = message;
 }
 
 /* =========================================================
@@ -736,13 +712,11 @@ function extractYearFromId(id){
     const y = parseInt(m[1], 10);
     if (y >= 2000 && y <= currentYear + 1) return String(y);
   }
-
   m = s.match(/^(\d{2})[-_]/);
   if (m){
     const yy = parseInt(m[1], 10);
     if (yy >= 0 && yy <= 30) return String(2000 + yy);
   }
-
   m = s.match(/^(\d{4})(\d{2})(\d{2})/);
   if (m){
     const y = parseInt(m[1], 10);
@@ -759,7 +733,6 @@ function extractYearFromDate(dateStr){
   if (!dateStr) return null;
   const s = String(dateStr);
   const currentYear = new Date().getFullYear();
-
   let m = s.match(/(\d{4})[-/]/);
   if (m){
     const y = parseInt(m[1], 10);
@@ -862,14 +835,14 @@ function toggleTheme(){
 }
 
 /* =========================================================
-   INDEXEDDB
+   INDEXEDDB — v7.2 : cache versionné v3
    ========================================================= */
 const Cache = {
   _db: null,
   async open(){
     if (this._db) return this._db;
     this._db = await new Promise((res, rej) => {
-      const req = indexedDB.open('decp-cache-v2', 1);
+      const req = indexedDB.open('decp-cache-' + CONFIG.CACHE_VERSION, 1);
       req.onupgradeneeded = () => {
         const db = req.result;
         if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath: 'id' });
@@ -1009,19 +982,9 @@ async function fetchWithProgress(url, { onProgress, signal, expectedSize } = {})
   return await blob.text();
 }
 
-/* =========================================================
-   RESOLUTION URL SELON MODE
-   ========================================================= */
 function resolveUrl(resourceUrl){
-  if (state.mode === 'proxy'){
-    return resourceUrl.replace('https://www.data.gouv.fr', '');
-  }
-  if (state.mode === 'corsproxy'){
-    return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(resourceUrl);
-  }
-  if (state.mode === 'corsproxy2'){
-    return 'https://corsproxy.org/?' + encodeURIComponent(resourceUrl);
-  }
+  if (state.mode === 'proxy') return resourceUrl.replace('https://www.data.gouv.fr', '');
+  if (state.mode === 'corsproxy') return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(resourceUrl);
   return resourceUrl;
 }
 
@@ -1030,7 +993,6 @@ function resolveUrl(resourceUrl){
    ========================================================= */
 async function detectEnvironment(){
   const isFileProtocol = location.protocol === 'file:';
-  
   safeSet('ivProto', location.protocol);
   safeSet('ivMode', isFileProtocol ? 'Fichier local' : 'Serveur');
 
@@ -1051,7 +1013,6 @@ async function detectEnvironment(){
       safeSet('ivStatus', '● EN LIGNE', 'v green');
       safeSet('ivLastCall', new Date().toLocaleTimeString('fr-FR'));
       safeSet('ivTime', state.apiTime + ' ms');
-      
       const dot = document.getElementById('statusDot');
       if (dot) dot.classList.remove('offline');
 
@@ -1059,16 +1020,13 @@ async function detectEnvironment(){
       await markCachedResources();
       return true;
     } catch(e){
-      if (e.name !== 'AbortError'){
-        console.debug(`[API] ${ep.type} indisponible : ${e.message}`);
-      }
+      if (e.name !== 'AbortError') console.debug(`[API] ${ep.type} indisponible : ${e.message}`);
     }
   }
 
   state.mode = 'upload';
   safeSet('tbMode', 'UPLOAD', 'val amber');
   safeSet('ivStatus', '● MANUEL', 'v amber');
-  
   const dot = document.getElementById('statusDot');
   if (dot) dot.classList.add('offline');
 
@@ -1079,10 +1037,7 @@ async function detectEnvironment(){
         <strong style="color:var(--red-marianne)">⚠️ API inaccessible</strong><br><br>
         <strong>Solutions :</strong><br>
         1. 📁 Glissez vos fichiers <code>decp-*.json</code> ci-dessous<br>
-        2. 🌐 Ou téléchargez-les depuis <a href="https://www.data.gouv.fr/fr/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/" target="_blank" style="color:var(--blue-eu);font-weight:600">data.gouv.fr</a><br><br>
-        <em style="color:var(--grey-500);font-size:11px">
-          ${isFileProtocol ? 'CORS bloque file:// — servez via HTTP pour l\'API.' : 'CORS bloque l\'accès direct depuis GitHub Pages.'}
-        </em>
+        2. 🌐 Ou téléchargez-les depuis <a href="https://www.data.gouv.fr/fr/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/" target="_blank" style="color:var(--blue-eu);font-weight:600">data.gouv.fr</a>
       </div>`;
   }
   return false;
@@ -1107,7 +1062,7 @@ function loadResourcesFromMeta(meta){
       API connectée via <strong style="color:var(--blue-eu)">${state.mode.toUpperCase()}</strong>
     </div>
     <div>${state.resources.length} ressources JSON détectées.</div>
-    <div style="margin-top:16px">Nouveauté v7.1 : <strong>extraction d'année par ID du marché</strong> ✅</div>
+    <div style="margin-top:16px">Cliquez sur <strong>▶ CHARGER</strong> pour démarrer.</div>
   </div>`);
 }
 
@@ -1173,6 +1128,7 @@ async function loadSelectedResources(){
   state.all = [];
   state.loadedResources = new Set();
   state.errors = 0;
+  showHelpBanner('', 'info');
   const total = selected.length;
   const fileStates = selected.map(r => ({ id: r.id, title: r.title, year: r.year, status: 'pending', received: 0, total: r.size || 0 }));
   renderProgressPanel(fileStates, 0, 'Initialisation…');
@@ -1318,10 +1274,8 @@ function computeQualityReport(){
     bySource[m.yearSource] = (bySource[m.yearSource]||0) + 1;
   }
   const reliability = ((total - noYear) / total) * 100;
-  return {
-    total, byYear, bySource, noYear, reliability,
-    sortedYears: Object.keys(byYear).sort().reverse()
-  };
+  return { total, byYear, bySource, noYear, reliability,
+    sortedYears: Object.keys(byYear).sort().reverse() };
 }
 
 function renderYearsSummary(){
@@ -1415,6 +1369,7 @@ async function handleFiles(files){
   if (!jsonFiles.length){ alert('Aucun fichier JSON détecté.'); return; }
   const parser = getParserPool();
   state.all = []; state.errors = 0;
+  showHelpBanner('', 'info');
   const fileStates = jsonFiles.map(f => ({ id: f.name, title: f.name, year: extractYearFromId(f.name) || extractYearFromDate(f.lastModified) || '—', status: 'pending', received: 0, total: f.size }));
   renderProgressPanel(fileStates, 0, 'Lecture des fichiers…');
   for (let i = 0; i < jsonFiles.length; i++){
@@ -1482,9 +1437,16 @@ function populateYearTags(){
   });
 }
 
+/* v7.2 : message clair si aucune donnée chargée */
 function populateCategorySelect(){
   const sel = document.getElementById('categorySelect');
   if (!sel) return;
+  if (!state.all.length){
+    sel.innerHTML = '<option value="">— Chargez d\'abord des données —</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
   const cats = new Set(state.all.map(m => m.categorie).filter(Boolean));
   const sorted = [...cats].sort((a, b) => {
     const ia = CATEGORIES_ORDER.indexOf(a);
@@ -1494,7 +1456,7 @@ function populateCategorySelect(){
     if (ib !== -1) return 1;
     return a.localeCompare(b);
   });
-  sel.innerHTML = '<option value="">— Ajouter un filtre —</option>' +
+  sel.innerHTML = `<option value="">— Ajouter un filtre (${sorted.length}) —</option>` +
     sorted.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
   sel.value = '';
   syncCategoryTags();
@@ -1574,6 +1536,28 @@ function applyFilters(page = 1){
   if (eCsv) eCsv.disabled = !state.totalResults;
   if (eJson) eJson.disabled = !state.totalResults;
   if (ePng) ePng.disabled = !state.totalResults;
+
+  /* v7.2 : bannière d'aide contextuelle */
+  if (!state.all.length){
+    showHelpBanner('');
+  } else if (!state.totalResults){
+    const reasons = [];
+    if (state.selectedCategories.size) reasons.push(`${state.selectedCategories.size} catégorie(s)`);
+    if (state.selectedYears.size) reasons.push(`${state.selectedYears.size} année(s)`);
+    if (state.selectedDept) reasons.push(`dépt. ${state.selectedDept}`);
+    if (q) reasons.push(`recherche "${escapeHtml(q)}"`);
+    showHelpBanner(
+      `⚠️ <strong>Aucun résultat.</strong> Filtres actifs : ${reasons.join(' + ') || 'aucun'}. ` +
+      `Essayez de <a href="#" id="helpClearFilters" style="color:inherit;text-decoration:underline;font-weight:700">tout effacer</a>.`,
+      'warn'
+    );
+    document.getElementById('helpClearFilters')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('filtersClear')?.click();
+    });
+  } else {
+    showHelpBanner('');
+  }
 
   persistURL();
   renderKPIs(state.filtered);
@@ -1665,7 +1649,18 @@ function renderResults(){
   if (activeView === 'files'){ renderFilesView(); return; }
 
   if (!slice.length){
-    area.innerHTML = `<div class="empty">Aucun marché ne correspond aux critères.</div>`;
+    if (!state.all.length){
+      area.innerHTML = `<div class="empty">
+        <div style="font-size:48px;margin-bottom:16px">📥</div>
+        <div style="font-weight:700;color:var(--text);margin-bottom:8px">Aucune donnée chargée</div>
+        <div>Cliquez sur <strong>▶ CHARGER</strong> ou glissez un fichier JSON à gauche.</div>
+      </div>`;
+    } else {
+      area.innerHTML = `<div class="empty">Aucun marché ne correspond aux critères.<br>
+        <button onclick="document.getElementById('filtersClear').click()"
+          style="margin-top:14px;padding:8px 16px;background:var(--blue-eu);color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:700">
+        ✖ Effacer tous les filtres</button></div>`;
+    }
     return;
   }
 
@@ -2393,7 +2388,10 @@ function renderActivities(){
    RÉ-ANALYSE
    ========================================================= */
 function reanalyzeYears(){
-  if (!state.all.length) return;
+  if (!state.all.length){
+    toast('⚠️ Aucune donnée à ré-analyser', 'error');
+    return;
+  }
   for (const m of state.all){
     const { year, source } = detectYear(
       m.id,
@@ -2502,6 +2500,7 @@ document.getElementById('clearBtn')?.addEventListener('click', () => {
   state.selectedDept = null;
   syncCategoryTags();
   populateYearTags();
+  populateCategorySelect();
   const eCsv = document.getElementById('exportCsv');
   const eJson = document.getElementById('exportJson');
   const ePng = document.getElementById('exportPng');
@@ -2619,6 +2618,13 @@ document.addEventListener('keydown', (e) => {
   getParserPool();
   restoreURL();
   await detectEnvironment();
+  /* v7.2 : afficher bannière d'aide si rien n'est chargé */
+  if (!state.all.length){
+    showHelpBanner(
+      '💡 <strong>Pour commencer</strong> : cliquez sur <strong>▶ CHARGER</strong> en haut, ou glissez un fichier <code>decp-*.json</code> dans la zone à gauche.',
+      'info'
+    );
+  }
 })();
 
 window.addEventListener('beforeunload', () => {
