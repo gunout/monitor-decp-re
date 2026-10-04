@@ -1,7 +1,0 @@
-{"marches":{"marche":[
- {"id":"202600015F","acheteur":{"id":"44090956200033"},"nature":"Marché","objet":"Véhicules de fonction pour la DCP - Véhicule de fonction essence","codeCPV":"30144300","techniques":{"technique":["Sans objet"]},"modalitesExecution":{"modaliteExecution":["Sans objet"]},"marcheInnovant":false,"ccag":"Fournitures courantes et services","offresRecues":1,"attributionAvance":false,"tauxAvance":0.0,"typeGroupementOperateurs":"Pas de groupement","sousTraitanceDeclaree":false,"procedure":"Appel d'offres ouvert","lieuExecution":{"code":"94","typeCode":"Code département"},"dureeMois":12,"dateNotification":"2026-01-26","datePublicationDonnees":"2026-02-01","montant":0.0,"typesPrix":{"typePrix":["Définitif actualisable"]},"formePrix":"Unitaire","titulaires":[{"titulaire":{"typeIdentifiant":"SIRET","id":"44090956200041"}}],"considerationsSociales":{"considerationSociale":["Marché réservé"]},"considerationsEnvironnementales":{"considerationEnvironnementale":["Clause environnementale"]},"modifications":[{"modification":{"id":1,"dateNotificationModification":"2025-12-10","datePublicationDonneesModification":"2026-02-01","titulaires":[{"titulaire":{"typeIdentifiant":"SIRET","id":"44090956200041"}}]}}]}
-]
-,"contrat-concession":[
-
-]
-}}
