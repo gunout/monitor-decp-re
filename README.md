@@ -5,7 +5,7 @@
 
 **Explorateur tout-en-un des marchés publics français**
 
-[![Version](https://img.shields.io/badge/version-7.0.0-003399?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/VOTRE_USER/monitor-decp/releases)
+[![Version](https://img.shields.io/badge/version-7.0.0-003399?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/gunout/monitor-decp-re/releases)
 [![Licence](https://img.shields.io/badge/licence-MIT-00a95f?style=for-the-badge)](LICENSE)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/fr/docs/Web/HTML)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
@@ -16,9 +16,9 @@
 [![DECP](https://img.shields.io/badge/DECP-2024-ffcc00?style=flat-square)](https://www.data.gouv.fr/)
 [![Achats publics](https://img.shields.io/badge/Achats-publics-E1000F?style=flat-square)](https://www.economie.gouv.fr/)
 
-[![Démo](https://img.shields.io/badge/▶%20Démo%20live-003399?style=for-the-badge)](https://VOTRE_USER.github.io/monitor-decp/)
-[![Signaler un bug](https://img.shields.io/badge/🐛%20Bug-E1000F?style=for-the-badge)](issues/new?template=bug.md)
-[![Demander une fonctionnalité](https://img.shields.io/badge/💡%20Idée-00a95f?style=for-the-badge)](issues/new?template=feature.md)
+[![Démo](https://img.shields.io/badge/▶%20Démo%20live-003399?style=for-the-badge)](https://gunout.github.io/monitor-decp-re/)
+[![Signaler un bug](https://img.shields.io/badge/🐛%20Bug-E1000F?style=for-the-badge)](../../issues/new?template=bug.md)
+[![Demander une fonctionnalité](https://img.shields.io/badge/💡%20Idée-00a95f?style=for-the-badge)](../../issues/new?template=feature.md)
 
 ![Aperçu](docs/screenshot.png)
 
@@ -111,8 +111,8 @@
 
 1. Clonez le repo :
 
-        git clone https://github.com/VOTRE_USER/monitor-decp.git
-        cd monitor-decp
+        git clone https://github.com/gunout/monitor-decp-re.git
+        cd monitor-decp-re
 
 2. Servez le fichier en local (les Web Workers nécessitent HTTP) :
 
@@ -132,12 +132,12 @@
 
 ### Option 3 — Déploiement GitHub Pages
 
-1. Activez **GitHub Pages** dans *Settings → Pages → Branch: main*
+1. Activez **GitHub Pages** dans _Settings → Pages → Branch: main_
 2. Poussez vos changements :
 
         git push origin main
 
-3. Accédez à **https://VOTRE_USER.github.io/monitor-decp/**
+3. Accédez à **https://gunout.github.io/monitor-decp-re/**
 
 ---
 
@@ -231,7 +231,7 @@
 
 ## 🏗️ Architecture
 
-    monitor-decp/
+    monitor-decp-re/
     ├── index.html              # Application complète (single-file)
     ├── README.md
     ├── LICENSE
@@ -245,15 +245,13 @@
 
 ### Flux de données
 
-```
-data.gouv.fr API  →  ParserPool (Web Worker)  →  JSON.parse
-       ↓
-normalizeMarche  →  Détection année  →  IndexedDB Cache
-       ↓
-   state.all  →  Filtres  →  Rendu
-       ↓
-Vues : Marchés · Catégories · Carte · Analyses · Évolution · Comparateur · Qualité
-```
+    data.gouv.fr API  →  ParserPool (Web Worker)  →  JSON.parse
+           ↓
+    normalizeMarche  →  Détection année  →  IndexedDB Cache
+           ↓
+       state.all  →  Filtres  →  Rendu
+           ↓
+    Vues : Marchés · Catégories · Carte · Analyses · Évolution · Comparateur · Qualité
 
 ### Composants clés
 
@@ -424,7 +422,7 @@ Nous utilisons [Conventional Commits](https://www.conventionalcommits.org/) :
 - [ ] 📉 Détection d'anomalies (montants aberrants)
 - [ ] 🌐 Multi-langue (EN, DE, ES)
 
-Voir les [issues ouvertes](issues) pour la liste complète.
+Voir les [issues ouvertes](../../issues) pour la liste complète.
 
 ---
 
@@ -434,7 +432,7 @@ Distribué sous licence **MIT**. Voir [`LICENSE`](LICENSE).
 
     MIT License
 
-    Copyright (c) 2024 VOTRE NOM
+    Copyright (c) 2026 Gunout
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -446,16 +444,22 @@ Distribué sous licence **MIT**. Voir [`LICENSE`](LICENSE).
     The above copyright notice and this permission notice shall be included in all
     copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND...
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 
 ---
 
 ## 🙏 Remerciements
 
-- 💙 **data.gouv.fr** — pour l'open data DECP
-- 🇫🇷 **DINUM** — pour le Système de Design de l'État
-- 🎨 **Marianne** — identité visuelle
-- 📊 **gregoiredavid/france-geojson** — contours départements
+- 💙 **[data.gouv.fr](https://www.data.gouv.fr/)** — pour l'open data DECP
+- 🇫🇷 **[DINUM](https://www.numerique.gouv.fr/)** — pour le Système de Design de l'État
+- 🎨 **[Marianne](https://www.gouvernement.fr/marque-de-letat)** — identité visuelle
+- 📊 **[gregoiredavid/france-geojson](https://github.com/gregoiredavid/france-geojson)** — contours départements
 
 ---
 
@@ -463,12 +467,18 @@ Distribué sous licence **MIT**. Voir [`LICENSE`](LICENSE).
 
 ### ⭐ Si ce projet vous aide, mettez-lui une étoile !
 
-[![Stars](https://img.shields.io/github/stars/VOTRE_USER/monitor-decp?style=social)](https://github.com/VOTRE_USER/monitor-decp)
-[![Forks](https://img.shields.io/github/forks/VOTRE_USER/monitor-decp?style=social)](https://github.com/VOTRE_USER/monitor-decp/fork)
+[![Stars](https://img.shields.io/github/stars/gunout/monitor-decp-re?style=social)](https://github.com/gunout/monitor-decp-re)
+[![Forks](https://img.shields.io/github/forks/gunout/monitor-decp-re?style=social)](https://github.com/gunout/monitor-decp-re/fork)
 
 **Fait avec ❤️ pour la transparence des marchés publics**
 
 [⬆ Retour en haut](#-monitor-decp)
+
+---
+
+### 🇫🇷 Gunout · 2026
+
+© 2026 **Gunout** — Tous droits réservés.
 
 </div>
 
