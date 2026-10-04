@@ -5,7 +5,7 @@
 
 **Explorateur tout-en-un des marchés publics français**
 
-[![Version](https://img.shields.io/badge/version-7.2-003399?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/gunout/monitor-decp-re/releases)
+[![Version](https://img.shields.io/badge/version-7.2.1-003399?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/gunout/monitor-decp-re/releases)
 [![Licence](https://img.shields.io/badge/licence-MIT-00a95f?style=for-the-badge)](LICENSE)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/fr/docs/Web/HTML)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
@@ -13,12 +13,12 @@
 [![PWA Ready](https://img.shields.io/badge/PWA-ready-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](#)
 
 [![Data.gouv.fr](https://img.shields.io/badge/Source-data.gouv.fr-000091?style=flat-square)](https://www.data.gouv.fr/fr/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/)
-[![DECP](https://img.shields.io/badge/DECP-2024-ffcc00?style=flat-square)](https://www.data.gouv.fr/)
+[![DECP](https://img.shields.io/badge/DECP-2024-ffcc00?style=flat-square)](#)
 [![Achats publics](https://img.shields.io/badge/Achats-publics-E1000F?style=flat-square)](https://www.economie.gouv.fr/)
 
 [![Démo](https://img.shields.io/badge/▶%20Démo%20live-003399?style=for-the-badge)](https://gunout.github.io/monitor-decp-re/)
-[![Signaler un bug](https://img.shields.io/badge/🐛%20Bug-E1000F?style=for-the-badge)](../../issues/new?template=bug.md)
-[![Demander une fonctionnalité](https://img.shields.io/badge/💡%20Idée-00a95f?style=for-the-badge)](../../issues/new?template=feature.md)
+[![Signaler un bug](https://img.shields.io/badge/🐛%20Bug-E1000F?style=for-the-badge)](../../issues/new)
+[![Demander une fonctionnalité](https://img.shields.io/badge/💡%20Idée-00a95f?style=for-the-badge)](../../issues/new)
 
 ![Aperçu](docs/screenshot.png)
 
@@ -132,7 +132,7 @@
 
 ### Option 3 — Déploiement GitHub Pages
 
-1. Activez **GitHub Pages** dans _Settings → Pages → Branch: main_
+1. Activez **GitHub Pages** dans *Settings → Pages → Branch: main*
 2. Poussez vos changements :
 
         git push origin main
@@ -481,6 +481,8 @@ Distribué sous licence **MIT**. Voir [`LICENSE`](LICENSE).
 © 2026 **Gunout** — Tous droits réservés.
 
 </div>
+
+
 
 ---
 
